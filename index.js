@@ -7,23 +7,15 @@ app.use(express.json());
 
 const JWT_SECRET = "your_jwt_secret123";
 
-app.post("/api/login", async (req, res) => {
+app.post("/api/jwt", async (req, res) => {
     try {
-      const { email, password } = req.body;
-  
-      // Check if user exists
-      const user = users.find((user) => user.email === email);
-      if (!user) return res.status(400).json({ error: "Invalid email or password" });
-  
-      // Check if password matches
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) return res.status(400).json({ error: "Invalid email or password" });
-  
+      const { id } = req.body;
+
       // Generate JWT token
-      const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign({ id: id }, JWT_SECRET, { expiresIn: "1h" });
       return res.json({ token });
     } catch (err) {
-      console.error("Error during login:", err.message);
+      console.error("Error during token generation:", err.message);
       return res.status(500).json({ error: "Server error" });
     }
   });
